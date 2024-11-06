@@ -2,6 +2,9 @@
 
 A simple command-line password manager that securely stores and retrieves encrypted passwords. This MVP (Minimum Viable Product) project demonstrates basic password management functionality using the Fernet symmetric encryption scheme.
 
+![iStock-808424876-scaled](https://github.com/user-attachments/assets/b7417ca6-60a2-4bb7-b737-abb14c295f56)
+
+
 ## 🎯 Credits
 This project was developed as part of the "4 days 4 projects" initiative by [Pythonando](https://pythonando.com.br) on YouTube.
 
