@@ -1,101 +1,112 @@
-# Password Manager
+# Passwd-Manag
 
-A simple command-line password manager that securely stores and retrieves encrypted passwords. This MVP (Minimum Viable Product) project demonstrates basic password management functionality using the Fernet symmetric encryption scheme.
+**A secure and user-friendly password management tool for managing and encrypting passwords effortlessly.**
 
-![iStock-808424876-scaled](https://github.com/user-attachments/assets/b7417ca6-60a2-4bb7-b737-abb14c295f56)
+---
 
+## 🔑 Features at a Glance
 
-## 🎯 Credits
-This project was developed as part of the "4 days 4 projects" initiative by [Pythonando](https://pythonando.com.br) on YouTube.
+- **Secure Encryption**: Uses the `cryptography.fernet` module for password encryption and decryption.
+- **Automatic Password Generation**: Generate secure passwords with customizable options.
+- **Domain Management**: Save, retrieve, list, and delete password entries associated with specific domains.
+- **Backup System**: Create backups of your stored passwords.
+- **Simple Key Management**: Easily create and archive encryption keys for secure password management.
 
-## 🔑 Features
-- Secure password encryption using Fernet (symmetric encryption)
-- Save passwords for different domains
-- Retrieve passwords using encryption key
-- Local storage of encrypted passwords
-- Key management system
+---
 
-## 🏗️ Project Structure
+## 🏗️ Visual Overview
+
+```mermaid
+graph TD;
+    A[User Input] -->|Key Management| B[Key Generation]
+    B -->|Encryption| C[Save Password]
+    A -->|Decryption| D[Retrieve Password]
+    C -->|Database Management| E[Save to DB]
+    D -->|Read DB| E
+    E -->|Optional Backup| F[Backup Passwords]
 ```
-password-manager/
-├── model/
-│   └── password.py      # Base models and Password class
-├── views/
-│   └── password_views.py # Encryption/decryption logic
-├── db/                  # Database directory for stored passwords
-├── keys/               # Directory for key storage
-└── templates.py        # CLI interface
-```
 
-## 🚀 Getting Started
+---
+
+## 🚀 Installation and Setup
 
 ### Prerequisites
-- Python 3.x
-- cryptography package
+- Python 3.8 or higher
+- Virtual environment (recommended)
 
-### Installation
-1. Clone the repository
+### Step 1: Clone the Repository
 ```bash
 git clone https://github.com/Caio-Felice-Cunha/Passwd-Manag.git
 cd Passwd-Manag
 ```
 
-2. Install required packages
+### Step 2: Install Dependencies
 ```bash
-pip install cryptography
+pip install -r requirements.txt
 ```
 
-### Usage
-1. Run the application:
+### Step 3: Run the Password Manager
 ```bash
-python templates.py
+python template.py
 ```
-
-2. Choose an option:
-   - Press 1 to save a new password
-   - Press 2 to retrieve a password
-
-3. For first-time use:
-   - The system will generate an encryption key
-   - Save this key securely - it's required to decrypt your passwords
-   - The key will also be saved in the keys directory (remove after securing it elsewhere)
-
-4. Follow the prompts to:
-   - Enter the domain (e.g., "gmail.com")
-   - Enter the password to encrypt
-   - Provide your encryption key when retrieving passwords
-
-## 🔒 Security Features
-- Fernet symmetric encryption for password protection
-- Secure random string generation for keys
-- SHA-256 hashing implementation
-- Base64 encoding for key storage
-
-## ⚠️ Important Notes
-- This is an MVP (Minimum Viable Product) designed for educational purposes
-- Store your encryption key securely - lost keys mean lost passwords
-- The system uses local file storage for passwords
-- Remove key files from the keys directory after securing them elsewhere
-
-## 🛠️ Technical Implementation
-- `BaseModel`: Handles file-based storage operations
-- `Password`: Manages password entries with domains
-- `FernetHasher`: Implements encryption/decryption logic using Fernet
-- Local storage using text files with "|" as delimiter
-
-## 🚧 Limitations (MVP Version)
-- Basic command-line interface
-- Local file-based storage
-- No user authentication system
-- Single encryption key for all passwords
-- No password strength validation
-- No backup/restore functionality
-
-## 🤝 Contributing
-Feel free to fork this repository and submit pull requests. For major changes, please open an issue first to discuss what you would like to change.
-
-## 📝 License
-This project is available as open source under the terms of the MIT License.
 
 ---
-*Note: This is an MVP project created for educational purposes. For production use, consider additional security measures and features.*
+
+## Usage Guide
+
+1. Launch the application using `python template.py`.
+2. Follow the on-screen menu to:
+   - **Save a New Password**: Encrypt and save a password for a specific domain.
+   - **Retrieve a Password**: Decrypt and display stored passwords.
+   - **List All Domains**: View all saved domains in your password manager.
+   - **Delete a Password**: Remove an entry by domain.
+   - **Create a Backup**: Save all passwords to a secure backup file.
+
+---
+
+## 🤝 Contribution Guide
+
+### Development Environment Setup
+1. Fork the repository and clone it:
+   ```bash
+   git clone https://github.com/your-username/Passwd-Manag.git
+   cd Passwd-Manag
+   ```
+2. Create a virtual environment:
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
+   ```
+3. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+### Submitting Changes
+1. Ensure your code follows the repository's style and passes tests.
+2. Push changes to your fork and create a pull request.
+3. Include a detailed description of your changes and their purpose.
+
+---
+
+## 🚧 Known Issues and Future Plans
+
+### Known Issues
+- **Invalid Key Handling**: The application doesn't currently enforce robust key validation.
+- **User Experience**: Error messages could be made more user-friendly.
+
+### Future Plans
+- **Cross-Platform GUI**: Build a graphical interface for broader accessibility.
+- **Cloud Synchronization**: Enable secure cloud-based backups.
+- **Advanced Password Analysis**: Add features to analyze the strength of existing passwords.
+
+---
+
+## 📝 License
+
+This project is licensed under the MIT License. See the `LICENSE` file for more details.
+
+---
+
+## 🎯 Credits
+This project was developed as part of the "4 days 4 projects" initiative by [Pythonando](https://pythonando.com.br) on YouTube.
