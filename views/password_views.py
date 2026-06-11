@@ -17,31 +17,35 @@ class FernetHasher:
         self.fernet = Fernet(key)
 
 
-    @classmethod    
+    @classmethod
     def _get_random_string(cls, length = 25):
-        string = ''
+        random_string = ''
         for i in range(length):
-            string += secrets.choice(cls.RANDOM_STRING_CHARS)
+            random_string += secrets.choice(cls.RANDOM_STRING_CHARS)
 
-        return string
+        return random_string
 
     @classmethod
     def create_key(cls, archive=False):
         value = cls._get_random_string()
         hasher = hashlib.sha256(value.encode('utf-8')).digest()
-        key = base64.b64encode(hasher)
+        # Fernet requires URL-safe base64. Older standard-b64 keys still
+        # decode to the same 32 bytes, so existing keys remain compatible.
+        key = base64.urlsafe_b64encode(hasher)
         if archive:
             return key, cls.archive_key(key)
         return key, None
 
     @classmethod
     def archive_key(cls, key):
+        cls.KEY_DIR.mkdir(parents=True, exist_ok=True)
+
         file = 'key.key'
         while Path(cls.KEY_DIR / file).exists():
             file = f'key_{cls._get_random_string(length=5)}.key'
 
         with open(cls.KEY_DIR / file, 'wb') as arq:
-            arq.write(key) 
+            arq.write(key)
 
         return cls.KEY_DIR / file
     
@@ -54,12 +58,7 @@ class FernetHasher:
     def decrypt(self, value):
         if not isinstance(value, bytes):
             value = value.encode()
-        
-        try:
-            return self.fernet.decrypt(value).decode()
-        except InvalidToken as e:
-            return 'Invalid Token'
-        
-    
-# fernet_caio = FernetHasher('***REMOVED***')
-# print(fernet_caio.decrypt('***REMOVED***'))
+
+        # Re-raise InvalidToken so callers can tell a wrong key apart from a
+        # stored value that happens to read like an error sentinel.
+        return self.fernet.decrypt(value).decode()

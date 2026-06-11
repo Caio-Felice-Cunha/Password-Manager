@@ -53,8 +53,10 @@ class BaseModel:
         with open(table_path, 'r') as f:
             data = json.load(f)
 
-        filtered_data = [entry for entry in data if entry.get('domain') != domain]
-        
+        # Match the case-insensitive comparison used when retrieving entries.
+        target = domain.strip().lower()
+        filtered_data = [entry for entry in data if entry.get('domain', '').lower() != target]
+
         if len(filtered_data) == len(data):
             return False
 

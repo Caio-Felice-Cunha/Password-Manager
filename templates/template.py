@@ -6,8 +6,12 @@ from datetime import datetime
 
 sys.path.append(os.path.abspath(os.curdir))
 
+from cryptography.fernet import InvalidToken
+
 from model.password import Password
 from views.password_views import FernetHasher
+
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 def save_password(fernet_user):
     domain = input('Domain: ').strip()
@@ -41,15 +45,16 @@ def get_password(fernet_user):
         if domain.lower() in entry['domain'].lower():
             try:
                 decrypted = fernet_user.decrypt(entry['password'].encode())
-                print(f'\nDomain: {entry["domain"]}')
-                print(f'Password: {decrypted.decode()}')
-                if entry.get('notes'):
-                    print(f'Notes: {entry["notes"]}')
-                print(f'Created at: {entry["created_at"]}')
+            except InvalidToken:
+                print("Wrong encryption key for this entry.")
                 return
-            except Exception as e:
-                print(f"Error decrypting: {e}")
-    
+            print(f'\nDomain: {entry["domain"]}')
+            print(f'Password: {decrypted}')
+            if entry.get('notes'):
+                print(f'Notes: {entry["notes"]}')
+            print(f'Created at: {entry["created_at"]}')
+            return
+
     print('No password found for this domain.')
 
 def list_domains():
@@ -70,8 +75,8 @@ def delete_password():
         print(f"Domain {domain} not found.")
 
 def backup_passwords():
-    backup_dir = Path('backups')
-    backup_dir.mkdir(exist_ok=True)
+    backup_dir = BASE_DIR / 'backups'
+    backup_dir.mkdir(parents=True, exist_ok=True)
     
     backup_file = backup_dir / f'backup_{datetime.now().strftime("%Y%m%d_%H%M%S")}.json'
     
@@ -114,7 +119,8 @@ def main():
                 continue
 
             passwords = Password.get()
-            if action == '1' and not passwords:
+            existing_keys = list(FernetHasher.KEY_DIR.glob('*.key')) if FernetHasher.KEY_DIR.exists() else []
+            if action == '1' and not passwords and not existing_keys:
                 key, path = FernetHasher.create_key(archive=True)
                 print('Your key has been created, save it carefully!')
                 print(f'Key: {key.decode("utf-8")}')
