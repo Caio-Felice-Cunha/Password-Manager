@@ -1,4 +1,4 @@
-# Passwd-Manag
+# Password Manager
 
 **A secure and user-friendly password management tool for managing and encrypting passwords effortlessly.**
 
@@ -36,8 +36,8 @@ graph TD;
 
 ### Step 1: Clone the Repository
 ```bash
-git clone https://github.com/Caio-Felice-Cunha/Passwd-Manag.git
-cd Passwd-Manag
+git clone https://github.com/Caio-Felice-Cunha/Password-Manager.git
+cd Password-Manager
 ```
 
 ### Step 2: Install Dependencies
@@ -69,8 +69,8 @@ python template.py
 ### Development Environment Setup
 1. Fork the repository and clone it:
    ```bash
-   git clone https://github.com/your-username/Passwd-Manag.git
-   cd Passwd-Manag
+   git clone https://github.com/your-username/Password-Manager.git
+   cd Password-Manager
    ```
 2. Create a virtual environment:
    ```bash
