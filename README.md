@@ -44,17 +44,32 @@ cd Password-Manager
 ```bash
 pip install -r requirements.txt
 ```
+The only third-party dependency is `cryptography` (used for Fernet encryption).
 
 ### Step 3: Run the Password Manager
 ```bash
-python template.py
+python main.py
 ```
+Run this from the repository root. `main.py` is a thin entry point around the
+interactive menu in `templates/template.py`.
+
+### Optional: Load demo data
+The encrypted database and key files are never committed (a password manager
+must not ship key material). To populate a fresh checkout with a few demo
+entries so you can try the retrieve, list, delete, and backup flows:
+```bash
+python seed.py
+```
+It prints a one-time demo encryption key. Use that key when the menu asks for
+one (option 2, "Retrieve password"). On a completely fresh checkout, choosing
+"Save new password" with an empty database instead generates and archives a new
+key for you under `keys/`.
 
 ---
 
 ## Usage Guide
 
-1. Launch the application using `python template.py`.
+1. Launch the application using `python main.py`.
 2. Follow the on-screen menu to:
    - **Save a New Password**: Encrypt and save a password for a specific domain.
    - **Retrieve a Password**: Decrypt and display stored passwords.
@@ -82,6 +97,14 @@ python template.py
    pip install -r requirements.txt
    ```
 
+### Running Tests
+The test suite uses `pytest` and covers password generation/validation, the
+encrypt/decrypt round trip, wrong-key handling, and the save/get/delete flow:
+```bash
+pip install pytest
+python -m pytest
+```
+
 ### Submitting Changes
 1. Ensure your code follows the repository's style and passes tests.
 2. Push changes to your fork and create a pull request.
@@ -89,11 +112,27 @@ python template.py
 
 ---
 
+## 🔍 How It Works
+
+- **Key derivation**: A 25-character random string is drawn with Python's
+  `secrets` module, hashed with SHA-256, and URL-safe base64 encoded into a
+  32-byte Fernet key.
+- **Encryption**: Each password is encrypted with `cryptography.fernet.Fernet`
+  before being written to disk. Decryption requires the original key; a wrong
+  key raises `InvalidToken` and the app reports it clearly.
+- **Storage**: Entries are stored as JSON in `db/Password.json`. Keys live in
+  `keys/` and backups in `backups/`. All three are gitignored so no secrets or
+  user data enter version control.
+
+---
+
 ## 🚧 Known Issues and Future Plans
 
 ### Known Issues
-- **Invalid Key Handling**: The application doesn't currently enforce robust key validation.
-- **User Experience**: Error messages could be made more user-friendly.
+- **Single-key model**: All entries are encrypted under one key. Losing the key
+  means losing access to the stored passwords; there is no recovery flow.
+- **Local-only storage**: Data lives in plaintext-named JSON files on the local
+  machine. There is no multi-device sync.
 
 ### Future Plans
 - **Cross-Platform GUI**: Build a graphical interface for broader accessibility.
